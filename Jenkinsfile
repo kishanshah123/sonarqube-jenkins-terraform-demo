@@ -36,50 +36,50 @@ pipeline {
                 sh 'terraform show -json ./terraform_plan > terraform_plan.json'
             } 
         }
-        stage('archive terrafrom plan output') {
-            steps {
-                archiveArtifacts artifacts: 'terraform_plan.json', excludes: 'output/*.md', onlyIfSuccessful: true
-            }
-        }
-        stage('Review and Run terraform apply') {
-            steps {
-                script {
-                    env.selected_action = input  message: 'Select action to perform',ok : 'Proceed',id :'tag_id',
-                    parameters:[choice(choices: ['apply', 'abort'], description: 'Select action', name: 'action')]
-                }
-            }
-        }
-        stage('Terraform Apply') { 
-            steps {
-                script {
-                    if (env.selected_action == 'apply') {
-                        sh 'terraform apply -auto-approve'
-                    } else {
-                        sh 'echo Review failed and terraform apply was aborted'
-                        sh 'exit 0'
-                    }
-                }   
-            }
-        }
-        stage('Run terraform destroy or not?') {
-            steps {
-                script {
-                    env.selected_action = input  message: 'Select action to perform',ok : 'Proceed',id :'tag_id',
-                    parameters:[choice(choices: ['destroy', 'abort'], description: 'Select action', name: 'action')]
-                }
-            }
-        }
-        stage('Terraform Destroy') { 
-            steps {
-                script {
-                    if (env.selected_action == "destroy") {
-                        sh 'terraform destroy -auto-approve'
-                    } else {
-                        sh 'echo We are not destroying the resource initialted, aborted!!!'
-                        sh 'exit 0'
-                    }
-                }
-            } 
-        }
+#        stage('archive terrafrom plan output') {
+#            steps {
+#                archiveArtifacts artifacts: 'terraform_plan.json', excludes: 'output/*.md', onlyIfSuccessful: true
+#            }
+#        }
+#        stage('Review and Run terraform apply') {
+#            steps {
+#                script {
+#                    env.selected_action = input  message: 'Select action to perform',ok : 'Proceed',id :'tag_id',
+#                    parameters:[choice(choices: ['apply', 'abort'], description: 'Select action', name: 'action')]
+#                }
+#            }
+#        }
+#        stage('Terraform Apply') { 
+#            steps {
+#                script {
+#                    if (env.selected_action == 'apply') {
+#                        sh 'terraform apply -auto-approve'
+#                    } else {
+#                        sh 'echo Review failed and terraform apply was aborted'
+#                        sh 'exit 0'
+#                    }
+#                }   
+#            }
+#        }
+#        stage('Run terraform destroy or not?') {
+#            steps {
+#                script {
+#                    env.selected_action = input  message: 'Select action to perform',ok : 'Proceed',id :'tag_id',
+#                    parameters:[choice(choices: ['destroy', 'abort'], description: 'Select action', name: 'action')]
+#                }
+#            }
+#        }
+#        stage('Terraform Destroy') { 
+#            steps {
+#                script {
+#                    if (env.selected_action == "destroy") {
+#                        sh 'terraform destroy -auto-approve'
+#                    } else {
+#                        sh 'echo We are not destroying the resource initialted, aborted!!!'
+#                        sh 'exit 0'
+#                    }
+#                }
+#            } 
+#        }
     } 
 }
